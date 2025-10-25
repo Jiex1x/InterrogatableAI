@@ -32,18 +32,26 @@ class LLMClient:
 Rules:
 1. Only answer based on the provided document content
 2. If there is no relevant information in the documents, clearly state "Based on the provided documents, I cannot find relevant information to answer this question"
-3. When answering, accurately cite sources in the format: According to [document name] segment X...
-4. Maintain accuracy and objectivity in your answers
-5. If information is incomplete, please state the limitations"""
+3. When answering, cite sources using the exact format provided: "According to [Source X: filename, Chunk Y, Similarity: Z]..."
+4. Provide comprehensive and detailed answers with all relevant information from the documents
+5. Include specific details like numbers, measurements, gene names, and other technical information
+6. Maintain accuracy and objectivity in your answers
+7. If information is incomplete, please state the limitations"""
 
-        user_prompt = f"""Based on the following document content, answer the question:
+        user_prompt = f"""Based on the following document content, answer the question comprehensively:
 
 Document Content:
 {context_text}
 
 Question: {query}
 
-Please answer the question based on the above document content and accurately cite sources. If there is no relevant information in the documents, please clearly state so."""
+Instructions:
+1. Provide a detailed and comprehensive answer with all relevant technical details
+2. Include specific numbers, measurements, gene names, and other technical information found in the documents
+3. Cite sources using the exact format provided in the document content
+4. Structure your answer clearly with proper paragraphs
+5. Ensure your answer is complete and not truncated
+6. If information is incomplete, mention what additional details would be needed"""
 
         try:
             response = self.client.chat.completions.create(
@@ -66,9 +74,9 @@ Please answer the question based on the above document content and accurately ci
             }
             
         except Exception as e:
-            logger.error(f"LLM调用失败: {e}")
+            logger.error(f"LLM call failed: {e}")
             return {
-                'answer': f"抱歉，处理您的问题时出现错误: {str(e)}",
+                'answer': f"Sorry, an error occurred while processing your question: {str(e)}",
                 'sources': [],
                 'context_used': 0,
                 'success': False
@@ -79,7 +87,12 @@ Please answer the question based on the above document content and accurately ci
         context_parts = []
         
         for i, doc in enumerate(context_docs, 1):
-            source_info = f"[文档 {doc['metadata']['filename']} 第 {doc['metadata'].get('chunk_index', 0) + 1} 段]"
+            filename = doc['metadata']['filename']
+            chunk_index = doc['metadata'].get('chunk_index', 0)
+            similarity = doc.get('similarity', 0)
+            
+            # 改进的引用格式：包含文件名、分块索引和相似度
+            source_info = f"[Source {i}: {filename}, Chunk {chunk_index + 1}, Similarity: {similarity:.2f}]"
             context_parts.append(f"{source_info}\n{doc['content']}\n")
         
         return "\n".join(context_parts)
