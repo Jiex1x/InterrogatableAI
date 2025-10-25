@@ -1,0 +1,7 @@
+# LLM API配置
+OPENAI_API_KEY=your_openai_api_key_here
+LLM_BASE_URL=https://api.openai.com/v1
+
+# 或者使用其他兼容OpenAI API的服务
+# LLM_BASE_URL=http://localhost:8000/v1
+

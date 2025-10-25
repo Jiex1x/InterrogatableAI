@@ -1,0 +1,16 @@
+# 核心依赖 - 使用最新兼容版本
+PyPDF2
+pdfplumber
+langchain
+langchain-community
+sentence-transformers
+chromadb
+faiss-cpu
+openai
+transformers
+torch
+numpy
+pandas
+tqdm
+python-dotenv
+rich
