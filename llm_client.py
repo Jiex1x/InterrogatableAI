@@ -27,23 +27,23 @@ class LLMClient:
         context_text = self._build_context(context_docs)
         
         # 构建提示词
-        system_prompt = """你是一个专业的学术助手，基于提供的文档内容回答问题。
-        
-规则：
-1. 只能基于提供的文档内容回答问题
-2. 如果文档中没有相关信息，请明确说明"根据提供的文档，我无法找到相关信息来回答这个问题"
-3. 回答时要准确引用来源，格式：根据[文档名]第X段的内容...
-4. 保持回答的准确性和客观性
-5. 如果信息不完整，请说明限制"""
+        system_prompt = """You are a professional academic assistant that answers questions based on provided document content.
 
-        user_prompt = f"""基于以下文档内容回答问题：
+Rules:
+1. Only answer based on the provided document content
+2. If there is no relevant information in the documents, clearly state "Based on the provided documents, I cannot find relevant information to answer this question"
+3. When answering, accurately cite sources in the format: According to [document name] segment X...
+4. Maintain accuracy and objectivity in your answers
+5. If information is incomplete, please state the limitations"""
 
-文档内容：
+        user_prompt = f"""Based on the following document content, answer the question:
+
+Document Content:
 {context_text}
 
-问题：{query}
+Question: {query}
 
-请基于上述文档内容回答问题，并准确引用来源。如果文档中没有相关信息，请明确说明。"""
+Please answer the question based on the above document content and accurately cite sources. If there is no relevant information in the documents, please clearly state so."""
 
         try:
             response = self.client.chat.completions.create(
@@ -103,7 +103,8 @@ class LLMClient:
         if not context_docs:
             return False
         
-        # 简单的相关性检查：如果最高相似度低于阈值，认为不相关
+        # 改进的相关性检查：降低阈值，提高匹配率
         max_similarity = max(doc.get('similarity', 0) for doc in context_docs)
-        return max_similarity >= 0.6
+        # 降低阈值到0.4，让更多文档被认为相关
+        return max_similarity >= 0.4
 

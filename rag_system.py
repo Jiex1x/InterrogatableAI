@@ -124,7 +124,7 @@ class RAGSystem:
         
         if not search_results:
             return {
-                'answer': '根据提供的文档，我无法找到相关信息来回答这个问题。',
+                'answer': 'Based on the provided documents, I cannot find relevant information to answer this question.',
                 'sources': [],
                 'success': True
             }
@@ -132,7 +132,7 @@ class RAGSystem:
         # 检查相关性
         if not self.llm_client.check_relevance(question, search_results):
             return {
-                'answer': '根据提供的文档，我无法找到相关信息来回答这个问题。',
+                'answer': 'Based on the provided documents, I cannot find relevant information to answer this question.',
                 'sources': [],
                 'success': True
             }

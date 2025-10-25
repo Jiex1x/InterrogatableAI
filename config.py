@@ -27,8 +27,8 @@ class Config:
     LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://api.openai.com/v1")
     
     # 检索配置
-    TOP_K_RESULTS = 5  # 检索前K个最相关的文档片段
-    SIMILARITY_THRESHOLD = 0.7  # 相似度阈值
+    TOP_K_RESULTS = 10  # 检索前K个最相关的文档片段 (增加检索数量)
+    SIMILARITY_THRESHOLD = 0.5  # 相似度阈值 (降低阈值，提高匹配率)
     
     # 回答配置
     MAX_TOKENS = 1000
