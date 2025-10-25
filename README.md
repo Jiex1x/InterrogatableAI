@@ -1,127 +1,127 @@
-# PDF智能问答系统
+# PDF Intelligent Q&A System
 
-基于RAG（Retrieval-Augmented Generation）技术的PDF文档智能问答系统
+An intelligent PDF document Q&A system based on RAG (Retrieval-Augmented Generation) technology
 
-## 功能特点
+## Features
 
-- 📚 **PDF文档处理**: 自动解析PDF文件，提取文本内容
-- 🔍 **智能检索**: 基于语义相似度的文档片段检索
-- 🤖 **精确回答**: 基于检索到的文档内容生成准确回答
-- 📖 **来源引用**: 提供精确的文档来源和段落引用
-- 🚫 **拒绝机制**: 当没有相关信息时拒绝回答
-- 💬 **终端交互**: 友好的命令行聊天界面
+- 📚 **PDF Document Processing**: Automatically parse PDF files and extract text content
+- 🔍 **Intelligent Retrieval**: Document fragment retrieval based on semantic similarity
+- 🤖 **Accurate Answers**: Generate precise answers based on retrieved document content
+- 📖 **Source Citations**: Provide accurate document sources and paragraph references
+- 🚫 **Rejection Mechanism**: Refuse to answer when no relevant information is available
+- 💬 **Terminal Interface**: User-friendly command-line chat interface
 
-## 系统架构
+## System Architecture
 
 ```
-PDF文档 → 文本提取 → 分块处理 → 向量化 → 向量数据库
-                                    ↓
-用户问题 → 向量检索 → 相关文档片段 → LLM生成 → 精确引用 → 回答
+PDF Documents → Text Extraction → Chunking → Vectorization → Vector Database
+                                                                    ↓
+User Questions → Vector Retrieval → Relevant Document Fragments → LLM Generation → Precise Citations → Answers
 ```
 
-## 安装依赖
+## Installation
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 配置
+## Configuration
 
-1. 复制环境变量配置文件：
+1. Copy the environment variables configuration file:
 ```bash
 cp env_example.txt .env
 ```
 
-2. 编辑 `.env` 文件，配置LLM API：
+2. Edit the `.env` file to configure LLM API:
 ```env
 OPENAI_API_KEY=your_openai_api_key_here
 LLM_BASE_URL=https://api.openai.com/v1
 ```
 
-## 使用方法
+## Usage
 
-### 启动聊天机器人
+### Start the Chatbot
 
 ```bash
 python chatbot.py
 ```
 
-### 可用命令
+### Available Commands
 
-- `/help` - 显示帮助信息
-- `/info` - 显示系统信息
-- `/rebuild` - 重建知识库
-- `/quit` - 退出程序
+- `/help` - Show help information
+- `/info` - Display system information
+- `/rebuild` - Rebuild the knowledge base
+- `/quit` - Exit the program
 
-### 直接提问
+### Direct Questioning
 
-在聊天界面中直接输入问题，系统会：
-1. 检索相关文档片段
-2. 基于检索结果生成回答
-3. 提供精确的来源引用
+In the chat interface, simply input your questions. The system will:
+1. Retrieve relevant document fragments
+2. Generate answers based on retrieval results
+3. Provide precise source citations
 
-## 系统组件
+## System Components
 
-### 1. PDF处理器 (`pdf_processor.py`)
-- 使用 `pdfplumber` 提取PDF文本
-- 支持批量处理多个PDF文件
-- 文本清理和预处理
+### 1. PDF Processor (`pdf_processor.py`)
+- Uses `pdfplumber` to extract PDF text
+- Supports batch processing of multiple PDF files
+- Text cleaning and preprocessing
 
-### 2. 文本分块器 (`text_chunker.py`)
-- 智能文本分割
-- 可配置的分块大小和重叠
-- 保持语义完整性
+### 2. Text Chunker (`text_chunker.py`)
+- Intelligent text segmentation
+- Configurable chunk size and overlap
+- Maintains semantic integrity
 
-### 3. 向量数据库 (`vector_store.py`)
-- 使用 ChromaDB 存储向量
-- 支持语义相似度搜索
-- 持久化存储
+### 3. Vector Database (`vector_store.py`)
+- Uses ChromaDB for vector storage
+- Supports semantic similarity search
+- Persistent storage
 
-### 4. LLM客户端 (`llm_client.py`)
-- 支持多种LLM API
-- 智能上下文构建
-- 精确来源提取
+### 4. LLM Client (`llm_client.py`)
+- Supports multiple LLM APIs
+- Intelligent context construction
+- Precise source extraction
 
-### 5. RAG系统 (`rag_system.py`)
-- 整合所有组件
-- 提供完整的问答流程
-- 智能相关性检查
+### 5. RAG System (`rag_system.py`)
+- Integrates all components
+- Provides complete Q&A workflow
+- Intelligent relevance checking
 
-## 配置选项
+## Configuration Options
 
-在 `config.py` 中可以调整：
+In `config.py`, you can adjust:
 
-- `CHUNK_SIZE`: 文本分块大小 (默认: 512)
-- `CHUNK_OVERLAP`: 分块重叠 (默认: 50)
-- `TOP_K_RESULTS`: 检索结果数量 (默认: 5)
-- `SIMILARITY_THRESHOLD`: 相似度阈值 (默认: 0.7)
+- `CHUNK_SIZE`: Text chunk size (default: 512)
+- `CHUNK_OVERLAP`: Chunk overlap (default: 50)
+- `TOP_K_RESULTS`: Number of retrieval results (default: 5)
+- `SIMILARITY_THRESHOLD`: Similarity threshold (default: 0.7)
 
-## 技术栈
+## Tech Stack
 
-- **PDF处理**: PyPDF2, pdfplumber
-- **文本处理**: LangChain
-- **向量化**: sentence-transformers
-- **向量数据库**: ChromaDB
-- **LLM接口**: OpenAI API
-- **终端界面**: Rich
+- **PDF Processing**: PyPDF2, pdfplumber
+- **Text Processing**: LangChain
+- **Vectorization**: sentence-transformers
+- **Vector Database**: ChromaDB
+- **LLM Interface**: OpenAI API
+- **Terminal Interface**: Rich
 
-## 注意事项
+## Important Notes
 
-1. 确保PDF文件在项目根目录
-2. 首次运行会自动构建知识库
-3. 需要配置有效的LLM API密钥
-4. 系统会自动拒绝没有相关信息的提问
+1. Ensure PDF files are in the project root directory
+2. The knowledge base will be built automatically on first run
+3. A valid LLM API key is required
+4. The system will automatically reject questions without relevant information
 
-## 故障排除
+## Troubleshooting
 
-### 常见问题
+### Common Issues
 
-1. **PDF提取失败**: 检查PDF文件是否损坏
-2. **LLM调用失败**: 检查API密钥和网络连接
-3. **向量数据库错误**: 删除 `vector_db` 文件夹重新构建
+1. **PDF Extraction Failed**: Check if PDF files are corrupted
+2. **LLM Call Failed**: Check API key and network connection
+3. **Vector Database Error**: Delete the `vector_db` folder and rebuild
 
-### 日志文件
+### Log Files
 
-系统运行日志保存在 `chatbot.log` 文件中，可以查看详细错误信息。
+System operation logs are saved in the `chatbot.log` file, where you can view detailed error information.
 
 
