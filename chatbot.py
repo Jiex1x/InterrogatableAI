@@ -3,6 +3,7 @@ Terminal Chatbot Interface
 """
 import os
 import sys
+import warnings
 from typing import Dict
 from rich.console import Console
 from rich.panel import Panel
@@ -10,6 +11,12 @@ from rich.text import Text
 from rich.prompt import Prompt
 from rich.table import Table
 import logging
+
+warnings.filterwarnings('ignore', category=UserWarning)
+warnings.filterwarnings('ignore', category=FutureWarning)
+warnings.filterwarnings('ignore', message='.*torch.utils._pytree.*')
+warnings.filterwarnings('ignore', message='.*resume_download.*')
+os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 
 from rag_system import RAGSystem
 

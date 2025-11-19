@@ -3,8 +3,13 @@ RAG System Main Controller
 Integrates all components to provide complete Q&A functionality
 """
 import os
+import warnings
 from typing import List, Dict, Optional
 import logging
+
+warnings.filterwarnings('ignore', category=UserWarning)
+warnings.filterwarnings('ignore', category=FutureWarning)
+os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 
 from config import Config
 from pdf_processor import PDFProcessor
