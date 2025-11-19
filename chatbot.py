@@ -30,6 +30,7 @@ class ChatBot:
         self.console = Console()
         self.rag_system = RAGSystem()
         self.running = True
+        self.conversation_history = []
         
     def display_welcome(self):
         """Display welcome message"""
@@ -56,6 +57,7 @@ class ChatBot:
         help_table.add_row("/help", "Show help information")
         help_table.add_row("/info", "Show system information")
         help_table.add_row("/rebuild", "Rebuild knowledge base")
+        help_table.add_row("/clear", "Clear conversation history")
         help_table.add_row("/quit", "Exit program")
         help_table.add_row("Direct question", "Input question to start conversation")
         
@@ -123,6 +125,9 @@ class ChatBot:
             self.console.print("[yellow]Rebuilding knowledge base...[/yellow]")
             self.rag_system.build_knowledge_base(force_rebuild=True)
             self.console.print("[green]Knowledge base rebuild completed![/green]")
+        elif command == "/clear":
+            self.conversation_history = []
+            self.console.print("[green]Conversation history cleared![/green]")
         elif command == "/quit":
             self.console.print("[blue]Goodbye![/blue]")
             self.running = False
@@ -153,10 +158,15 @@ class ChatBot:
                     if user_input.startswith("/"):
                         self.handle_command(user_input)
                     else:
-                        # Process question
                         self.console.print("[yellow]Thinking...[/yellow]")
-                        response = self.rag_system.ask_question(user_input)
+                        response = self.rag_system.ask_question(user_input, self.conversation_history)
                         self.display_response(response)
+                        
+                        self.conversation_history.append({"role": "user", "content": user_input})
+                        self.conversation_history.append({"role": "assistant", "content": response['answer']})
+                        
+                        if len(self.conversation_history) > 6:
+                            self.conversation_history = self.conversation_history[-6:]
                         
                 except KeyboardInterrupt:
                     self.console.print("\n[yellow]Interrupt signal detected[/yellow]")

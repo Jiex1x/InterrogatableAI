@@ -72,7 +72,7 @@ class RAGSystem:
         
         logger.info("Knowledge base construction completed!")
     
-    def ask_question(self, question: str) -> Dict:
+    def ask_question(self, question: str, conversation_history: List[Dict] = None) -> Dict:
         """Answer question"""
         if not self.llm_client:
             # Even without LLM, show retrieval results
@@ -137,10 +137,10 @@ class RAGSystem:
                 'success': True
             }
         
-        # Generate response
         response = self.llm_client.generate_response(
             query=question,
             context_docs=search_results,
+            conversation_history=conversation_history,
             max_tokens=self.config.MAX_TOKENS,
             temperature=self.config.TEMPERATURE
         )

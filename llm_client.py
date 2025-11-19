@@ -23,6 +23,7 @@ class LLMClient:
     def generate_response(self, 
                          query: str, 
                          context_docs: List[Dict], 
+                         conversation_history: List[Dict] = None,
                          max_tokens: int = 1000,
                          temperature: float = 0.1) -> Dict:
         """Generate response"""
@@ -57,37 +58,28 @@ Instructions:
 5. Ensure your answer is complete and not truncated
 6. If information is incomplete, mention what additional details would be needed"""
 
-        try:
-            # Call Chat Completions API according to OpenAI official documentation
-            # Reference: https://platform.openai.com/docs/api-reference/chat/create
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ],
-                max_tokens=max_tokens,
-                temperature=temperature
-            )
-            
-            # Extract answer content
-            answer = response.choices[0].message.content
-            
-            return {
-                'answer': answer,
-                'sources': self._extract_sources(context_docs),
-                'context_used': len(context_docs),
-                'success': True
-            }
-            
-        except Exception as e:
-            logger.error(f"LLM call failed: {e}")
-            return {
-                'answer': f"Sorry, an error occurred while processing your question: {str(e)}",
-                'sources': [],
-                'context_used': 0,
-                'success': False
-            }
+        messages = [{"role": "system", "content": system_prompt}]
+        
+        if conversation_history:
+            messages.extend(conversation_history)
+        
+        messages.append({"role": "user", "content": user_prompt})
+        
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=messages,
+            max_tokens=max_tokens,
+            temperature=temperature
+        )
+        
+        answer = response.choices[0].message.content
+        
+        return {
+            'answer': answer,
+            'sources': self._extract_sources(context_docs),
+            'context_used': len(context_docs),
+            'success': True
+        }
     
     def _build_context(self, context_docs: List[Dict]) -> str:
         """Build context text"""
