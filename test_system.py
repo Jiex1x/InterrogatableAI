@@ -1,13 +1,13 @@
 """
-系统测试脚本
-验证各个组件是否正常工作
+System Test Script
+Verify that all components are working properly
 """
 import os
 import sys
 from pathlib import Path
 
 def test_imports():
-    """测试依赖导入"""
+    """Test dependency imports"""
     print("🔍 Testing dependency imports...")
     
     try:
@@ -62,88 +62,88 @@ def test_imports():
     return True
 
 def test_pdf_files():
-    """测试PDF文件"""
-    print("\n📚 检查PDF文件...")
+    """Test PDF files"""
+    print("\n📚 Checking PDF files...")
     
     pdf_files = [f for f in os.listdir('.') if f.endswith('.pdf')]
     
     if not pdf_files:
-        print("❌ 没有找到PDF文件")
+        print("❌ No PDF files found")
         return False
     
-    print(f"✅ 找到 {len(pdf_files)} 个PDF文件")
+    print(f"✅ Found {len(pdf_files)} PDF files")
     
-    # 显示前5个文件作为示例
+    # Display first 5 files as examples
     for i, file in enumerate(pdf_files[:5]):
         print(f"  • {file}")
     
     if len(pdf_files) > 5:
-        print(f"  ... 还有 {len(pdf_files) - 5} 个文件")
+        print(f"  ... and {len(pdf_files) - 5} more files")
     
     return True
 
 def test_config():
-    """测试配置文件"""
-    print("\n⚙️ 检查配置文件...")
+    """Test configuration file"""
+    print("\n⚙️ Checking configuration file...")
     
     if not os.path.exists('.env'):
-        print("⚠️ 未找到 .env 文件，将使用默认配置")
-        print("💡 建议创建 .env 文件并配置LLM API密钥")
+        print("⚠️ .env file not found, will use default configuration")
+        print("💡 It is recommended to create .env file and configure LLM API key")
         return True
     
-    print("✅ 找到 .env 配置文件")
+    print("✅ Found .env configuration file")
     return True
 
 def test_system_components():
-    """测试系统组件"""
-    print("\n🔧 测试系统组件...")
+    """Test system components"""
+    print("\n🔧 Testing system components...")
     
     try:
         from pdf_processor import PDFProcessor
-        print("✅ PDF处理器导入成功")
+        print("✅ PDF processor import successful")
     except Exception as e:
-        print(f"❌ PDF处理器导入失败: {e}")
+        print(f"❌ PDF processor import failed: {e}")
         return False
     
     try:
         from text_chunker import TextChunker
-        print("✅ 文本分块器导入成功")
+        print("✅ Text chunker import successful")
     except Exception as e:
-        print(f"❌ 文本分块器导入失败: {e}")
+        print(f"❌ Text chunker import failed: {e}")
         return False
     
     try:
         from vector_store import VectorStore
-        print("✅ 向量数据库导入成功")
+        print("✅ Vector database import successful")
     except Exception as e:
-        print(f"❌ 向量数据库导入失败: {e}")
+        print(f"❌ Vector database import failed: {e}")
         return False
     
     try:
         from llm_client import LLMClient
-        print("✅ LLM客户端导入成功")
+        print("✅ LLM client import successful")
     except Exception as e:
-        print(f"❌ LLM客户端导入失败: {e}")
+        print(f"❌ LLM client import failed: {e}")
         return False
     
     try:
         from rag_system import RAGSystem
-        print("✅ RAG系统导入成功")
+        print("✅ RAG system import successful")
     except Exception as e:
-        print(f"❌ RAG系统导入失败: {e}")
+        print(f"❌ RAG system import failed: {e}")
         return False
     
     return True
 
 def main():
-    """主测试函数"""
-    print("🚀 开始系统测试...\n")
+    """Main test function"""
+    print("🚀 Starting system tests...\n")
     
     tests = [
-        ("依赖导入", test_imports),
-        ("PDF文件", test_pdf_files),
-        ("配置文件", test_config),
-        ("系统组件", test_system_components)
+        ("Dependency Imports", test_imports),
+        ("PDF Files", test_pdf_files),
+        ("Configuration File", test_config),
+        ("System Components", test_system_components)
     ]
     
     passed = 0
@@ -151,29 +151,29 @@ def main():
     
     for test_name, test_func in tests:
         print(f"\n{'='*50}")
-        print(f"测试: {test_name}")
+        print(f"Test: {test_name}")
         print('='*50)
         
         try:
             if test_func():
-                print(f"✅ {test_name} 测试通过")
+                print(f"✅ {test_name} test passed")
                 passed += 1
             else:
-                print(f"❌ {test_name} 测试失败")
+                print(f"❌ {test_name} test failed")
         except Exception as e:
-            print(f"❌ {test_name} 测试出错: {e}")
+            print(f"❌ {test_name} test error: {e}")
     
     print(f"\n{'='*50}")
-    print(f"测试结果: {passed}/{total} 通过")
+    print(f"Test Results: {passed}/{total} passed")
     print('='*50)
     
     if passed == total:
-        print("🎉 所有测试通过！系统准备就绪")
-        print("\n💡 下一步:")
-        print("1. 配置 .env 文件（如果需要LLM功能）")
-        print("2. 运行: python chatbot.py")
+        print("🎉 All tests passed! System is ready")
+        print("\n💡 Next steps:")
+        print("1. Configure .env file (if LLM functionality is needed)")
+        print("2. Run: python chatbot.py")
     else:
-        print("⚠️ 部分测试失败，请检查错误信息")
+        print("⚠️ Some tests failed, please check error messages")
     
     return passed == total
 

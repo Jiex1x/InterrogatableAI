@@ -1,6 +1,6 @@
 """
-RAG系统主控制器
-整合所有组件，提供完整的问答功能
+RAG System Main Controller
+Integrates all components to provide complete Q&A functionality
 """
 import os
 from typing import List, Dict, Optional
@@ -18,7 +18,7 @@ class RAGSystem:
     def __init__(self):
         self.config = Config()
         
-        # 初始化组件
+        # Initialize components
         self.pdf_processor = PDFProcessor(self.config.PDF_DIR)
         self.text_chunker = TextChunker(
             chunk_size=self.config.CHUNK_SIZE,
@@ -30,7 +30,7 @@ class RAGSystem:
             embedding_model=self.config.EMBEDDING_MODEL
         )
         
-        # 初始化LLM客户端
+        # Initialize LLM client
         if self.config.LLM_API_KEY:
             self.llm_client = LLMClient(
                 api_key=self.config.LLM_API_KEY,
@@ -42,19 +42,19 @@ class RAGSystem:
             self.llm_client = None
     
     def build_knowledge_base(self, force_rebuild: bool = False):
-        """构建知识库"""
+        """Build knowledge base"""
         logger.info("Starting knowledge base construction...")
         
-        # 检查是否需要重建
+        # Check if rebuild is needed
         if not force_rebuild and self.vector_store.get_collection_info()['document_count'] > 0:
             logger.info("Knowledge base already exists, skipping construction")
             return
         
-        # 清空现有数据
+        # Clear existing data
         if force_rebuild:
             self.vector_store.clear_collection()
         
-        # 处理PDF文档
+        # Process PDF documents
         logger.info("Processing PDF documents...")
         documents = self.pdf_processor.process_all_pdfs()
         
@@ -62,23 +62,23 @@ class RAGSystem:
             logger.error("No PDF documents found")
             return
         
-        # 文本分块
+        # Text chunking
         logger.info("Performing text chunking...")
         chunks = self.text_chunker.chunk_all_documents(documents)
         
-        # 存储到向量数据库
+        # Store to vector database
         logger.info("Storing to vector database...")
         self.vector_store.add_documents(chunks)
         
         logger.info("Knowledge base construction completed!")
     
     def ask_question(self, question: str) -> Dict:
-        """回答问题"""
+        """Answer question"""
         if not self.llm_client:
-            # 即使没有LLM，也显示检索结果
+            # Even without LLM, show retrieval results
             logger.info(f"Processing question: {question}")
             
-            # 检索相关文档
+            # Retrieve relevant documents
             search_results = self.vector_store.search(
                 query=question,
                 top_k=self.config.TOP_K_RESULTS,
@@ -115,7 +115,7 @@ class RAGSystem:
         
         logger.info(f"Processing question: {question}")
         
-        # 检索相关文档
+        # Retrieve relevant documents
         search_results = self.vector_store.search(
             query=question,
             top_k=self.config.TOP_K_RESULTS,
@@ -129,7 +129,7 @@ class RAGSystem:
                 'success': True
             }
         
-        # 检查相关性
+        # Check relevance
         if not self.llm_client.check_relevance(question, search_results):
             return {
                 'answer': 'Based on the provided documents, I cannot find relevant information to answer this question.',
@@ -137,7 +137,7 @@ class RAGSystem:
                 'success': True
             }
         
-        # 生成回答
+        # Generate response
         response = self.llm_client.generate_response(
             query=question,
             context_docs=search_results,
@@ -148,7 +148,7 @@ class RAGSystem:
         return response
     
     def get_system_info(self) -> Dict:
-        """获取系统信息"""
+        """Get system information"""
         vector_info = self.vector_store.get_collection_info()
         
         return {

@@ -1,5 +1,5 @@
 """
-RAG系统配置文件
+RAG System Configuration File
 """
 import os
 from dotenv import load_dotenv
@@ -7,30 +7,30 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    # PDF文档路径
+    # PDF document directory path
     PDF_DIR = "."
     
-    # 向量数据库配置
+    # Vector database configuration
     VECTOR_DB_PATH = "./vector_db"
     COLLECTION_NAME = "pdf_documents"
     
-    # 文本分块配置
-    CHUNK_SIZE = 512  # 每个文本块的大小
-    CHUNK_OVERLAP = 50  # 文本块之间的重叠
+    # Text chunking configuration
+    CHUNK_SIZE = 512  # Size of each text chunk
+    CHUNK_OVERLAP = 50  # Overlap between text chunks
     
-    # 向量化模型
+    # Embedding model
     EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     
-    # LLM配置
+    # LLM configuration
     LLM_API_KEY = os.getenv("OPENAI_API_KEY")
     LLM_MODEL = "gpt-3.5-turbo"
     LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://api.openai.com/v1")
     
-    # 检索配置
-    TOP_K_RESULTS = 15  # 检索前K个最相关的文档片段 (增加检索数量，覆盖更多内容)
-    SIMILARITY_THRESHOLD = 0.5  # 相似度阈值 (降低阈值，提高匹配率)
+    # Retrieval configuration
+    TOP_K_RESULTS = 15  # Retrieve top K most relevant document segments (increase retrieval count to cover more content)
+    SIMILARITY_THRESHOLD = 0.5  # Similarity threshold (lower threshold to increase match rate)
     
-    # 回答配置
-    MAX_TOKENS = 2000  # 增加token限制，避免回答被截断
+    # Response configuration
+    MAX_TOKENS = 2000  # Increase token limit to avoid truncated responses
     TEMPERATURE = 0.1
 

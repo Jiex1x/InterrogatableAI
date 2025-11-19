@@ -1,6 +1,6 @@
 """
-LLM客户端
-负责与语言模型交互
+LLM Client
+Responsible for interacting with language models
 """
 import openai
 from typing import List, Dict, Optional
@@ -10,6 +10,10 @@ logger = logging.getLogger(__name__)
 
 class LLMClient:
     def __init__(self, api_key: str, base_url: str, model: str):
+        """
+        Initialize OpenAI client
+        According to OpenAI official documentation: https://platform.openai.com/docs/api-reference
+        """
         self.client = openai.OpenAI(
             api_key=api_key,
             base_url=base_url
@@ -21,12 +25,12 @@ class LLMClient:
                          context_docs: List[Dict], 
                          max_tokens: int = 1000,
                          temperature: float = 0.1) -> Dict:
-        """生成回答"""
+        """Generate response"""
         
-        # 构建上下文
+        # Build context
         context_text = self._build_context(context_docs)
         
-        # 构建提示词
+        # Build prompts
         system_prompt = """You are a professional academic assistant that answers questions based on provided document content.
 
 Rules:
@@ -54,6 +58,8 @@ Instructions:
 6. If information is incomplete, mention what additional details would be needed"""
 
         try:
+            # Call Chat Completions API according to OpenAI official documentation
+            # Reference: https://platform.openai.com/docs/api-reference/chat/create
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[
@@ -64,6 +70,7 @@ Instructions:
                 temperature=temperature
             )
             
+            # Extract answer content
             answer = response.choices[0].message.content
             
             return {
@@ -83,7 +90,7 @@ Instructions:
             }
     
     def _build_context(self, context_docs: List[Dict]) -> str:
-        """构建上下文文本"""
+        """Build context text"""
         context_parts = []
         
         for i, doc in enumerate(context_docs, 1):
@@ -91,14 +98,14 @@ Instructions:
             chunk_index = doc['metadata'].get('chunk_index', 0)
             similarity = doc.get('similarity', 0)
             
-            # 改进的引用格式：包含文件名、分块索引和相似度
+            # Improved citation format: includes filename, chunk index, and similarity
             source_info = f"[Source {i}: {filename}, Chunk {chunk_index + 1}, Similarity: {similarity:.2f}]"
             context_parts.append(f"{source_info}\n{doc['content']}\n")
         
         return "\n".join(context_parts)
     
     def _extract_sources(self, context_docs: List[Dict]) -> List[Dict]:
-        """提取来源信息"""
+        """Extract source information"""
         sources = []
         
         for doc in context_docs:
@@ -112,12 +119,12 @@ Instructions:
         return sources
     
     def check_relevance(self, query: str, context_docs: List[Dict]) -> bool:
-        """检查文档是否与问题相关"""
+        """Check if documents are relevant to the question"""
         if not context_docs:
             return False
         
-        # 改进的相关性检查：降低阈值，提高匹配率
+        # Improved relevance check: lower threshold to increase match rate
         max_similarity = max(doc.get('similarity', 0) for doc in context_docs)
-        # 降低阈值到0.4，让更多文档被认为相关
+        # Lower threshold to 0.4 to allow more documents to be considered relevant
         return max_similarity >= 0.4
 

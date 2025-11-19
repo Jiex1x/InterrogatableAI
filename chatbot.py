@@ -1,5 +1,5 @@
 """
-终端聊天机器人界面
+Terminal Chatbot Interface
 """
 import os
 import sys
@@ -13,7 +13,7 @@ import logging
 
 from rag_system import RAGSystem
 
-# 设置日志
+# Setup logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
